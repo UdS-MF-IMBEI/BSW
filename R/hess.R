@@ -1,4 +1,4 @@
-#' @title Deriving the second partial derivatives of the log likelihood function of the bog-binomial model in \code{bsw()} (Hessian matrix)
+#' @title Deriving the second partial derivatives of the log likelihood function of the log-binomial model in \code{bsw()} (Hessian matrix)
 #' @description \code{hess()} derives the second partial derivatives of the log likelihood function of the log-binomial model.
 #' @usage hess(theta, y, x)
 #' @param theta A numeric vector containing the initial values of the model parameters.

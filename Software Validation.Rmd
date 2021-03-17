@@ -1,0 +1,89 @@
+---
+title: "Software Validation"
+author: "Jakob Schöpe"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Software Validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Test Suite
+The following fictitious example of a prospective cohort study will be used to validate the correct estimation of the BSW package in R.
+
+||Exposed|Non-Exposed|
+|:--:|:--:|:--:|
+|Cases|200|50|
+|Non-Cases|50|200|
+
+```{r, echo=TRUE, results='markup', comment=""}
+library(testthat)
+library(BSW)
+df <- data.frame(y = rep(c(0, 1), each = 250), 
+                 x = rep(c(0, 1, 0, 1), times = c(200, 50, 50, 200))
+                 )
+RR <- (200 * 250) / (50 * 250)
+SE <- sqrt((1/200 + 1/50) - (1/250 + 1/250))
+fit <- bsw(y ~ x, df)
+out <- summary(fit)
+```
+
+The relative risk for exposed individuals compared to non-exposed individuals can be calculated from 
+
+<center>$RR = \displaystyle\frac{200 * 250}{50*250} = 4$.</center>
+
+```{r, echo=TRUE, results='markup', comment=""}
+test_that(desc = "Estimated relative risk is equal to 4",
+          code = {
+                  expect_equal(object = unname(exp(coef(fit)[2])),
+                               expected = RR)
+            }
+          )
+```
+
+The standard error of the natural logarithm of the relative risk can be calculated from
+
+<center>$SE(ln(RR)) = \displaystyle\sqrt{\Big(\frac{1}{200} + \frac{1}{50}\Big) - \Big(\frac{1}{250}+\frac{1}{250}\Big)} = 0.130384$.</center>
+
+```{r, echo=TRUE, results='markup', comment=""}
+test_that(desc = "Estimated standard error is equal to 0.1303840",
+          code = {
+                  expect_equal(object = unname(out$std.err[2]), 
+                               expected = SE)
+            }
+          )
+```
+
+The z-value can be calculated from
+
+<center>$z = \displaystyle\frac{1.386294}{0.130384} = 10.63239$.</center>
+
+```{r, echo=TRUE, results='markup', comment=""}
+test_that(desc = "Estimated z-value is equal to 10.63239",
+          code = {
+                  expect_equal(object = unname(out$z.value[2]), 
+                               expected = log(RR) / SE)
+            }
+          )
+```
+
+The 95% confidence interval limits can be calculated from
+
+<center>$exp(1.386294 \pm 1.959964 * 0.1303840) = [3.097968; 5.164676]$.</center>
+
+```{r, echo=TRUE, results='markup', comment=""}
+test_that(desc = "Estimated 95% confidence interval limits are equal to 3.097968 and 5.164676",
+          code = {
+                  expect_equal(object = unname(exp(confint(fit)[2,])), 
+                               expected = exp(log(RR) + SE * qnorm(c(0.025, 0.975))))
+            }
+          )
+```

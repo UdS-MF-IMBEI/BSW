@@ -1,10 +1,10 @@
 ---
-title: "Software Validation"
+title: "Validation"
 author: "Jakob Schöpe"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Software Validation}
+  %\VignetteIndexEntry{Validation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

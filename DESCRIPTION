@@ -14,5 +14,4 @@ VignetteBuilder: knitr
 Depends: Matrix, matrixStats, quadprog
 Suggests: knitr, rmarkdown
 Imports: methods
-LazyData: true
 RoxygenNote: 7.1.0

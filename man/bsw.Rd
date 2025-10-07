@@ -4,7 +4,7 @@
 \alias{bsw}
 \title{Fitting a log-binomial model using the Bekhit-Schöpe-Wagenpfeil (BSW) algorithm}
 \usage{
-bsw(formula, data, maxit = 200L)
+bsw(formula, data, maxit = 200L, conswitch = 1)
 }
 \arguments{
 \item{formula}{An object of class \code{"formula"} (or one that can be coerced to that class): a symbolic description of the model to be fitted.}
@@ -12,6 +12,14 @@ bsw(formula, data, maxit = 200L)
 \item{data}{A data frame containing the variables in the model.}
 
 \item{maxit}{A positive integer giving the maximum number of iterations.}
+
+\item{conswitch}{Specifies how the constraint matrix is constructed:
+\describe{
+  \item{1 (default)}{Generates all possible combinations of minimum and maximum values for the predictors (excluding the intercept), resulting in \eqn{2^{m-1}} constraints.
+  This formulation constrains model predictions within the observed data range, making it suitable for both risk factor identification and prediction (prognosis).}
+  \item{0}{Uses the raw design matrix \code{x} as the constraint matrix, resulting in \eqn{n} constraints.
+  This is primarily suitable for identifying risk factors, but not for prediction tasks, as predictions are not bounded to realistic ranges.}
+}}
 }
 \value{
 An object of S4 class \code{"bsw"} containing the following slots:
@@ -30,8 +38,8 @@ An object of S4 class \code{"bsw"} containing the following slots:
 \examples{
 set.seed(123)
 x <- rnorm(100, 50, 10)
-y <- rbinom(100, 1, exp(-4 + x * 0.04)) 
-fit <- bsw(formula = y ~ x, data = data.frame(y = y, x = x))
+y <- rbinom(100, 1, exp(-4 + x * 0.04))
+fit <- bsw(formula = y ~ x, conswitch = 1, data = data.frame(y = y, x = x))
 summary(fit)
 }
 \references{

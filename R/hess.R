@@ -12,10 +12,8 @@ hess <- function(theta, y, x) {
   p <- exp(x %*% theta)
   p[p >= 1] <- 1 - 1e-5
   s <- p * (y - 1) / (1 - p)^2
-  im <- 0
-  for(i in 1:nrow(x)){
-    im <- im + x[i,] %*% t(x[i,]) * s[i]
-  }
+  x_weighted <- sweep(x, 1, s, "*")
+  im <- t(x) %*% x_weighted
   colnames(im) <- names(theta)
   rownames(im) <- names(theta)
   return(-im)

@@ -4,10 +4,12 @@
 \alias{constr}
 \title{Setting the linear inequality constraints for \code{bsw()}}
 \usage{
-constr(x)
+constr(x, version = 1)
 }
 \arguments{
 \item{x}{A model matrix.}
+
+\item{version}{switch for constraints}
 }
 \value{
 A matrix containing the linear inequality constraints for \code{bsw()}.
